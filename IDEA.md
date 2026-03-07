@@ -34,6 +34,7 @@ Expo - mobile app (React Native)
 Cloudflare RealtimeKit - video/audio streaming, chat, transcription, recording
 Next.js on Vercel - dashboard + API routes
 Groq - fast AI triage (Whisper for transcription, Llama for categorization)
+Zustand - provider-free shared incidents state in dashboard UI
 
 App Features
 Mobile App (Expo)
@@ -46,6 +47,7 @@ Ghost Mode: Calculator disguise - fully functional calculator, type "911" + hold
 Dispatcher Dashboard (Next.js)
 Real-time alerts with video feeds, location on map
 AI-generated triage summaries and priority scores
+Shared global incident state (no provider wrapper) keeps header counts and incident list in sync
 Command prompt at bottom for mass actions:
 "ask all: are you safe?" → sends to all active alerts
 "summarize building A" → AI aggregates status
@@ -116,7 +118,7 @@ Time includes Q&A - keep presentation to ~2 min, leave room for questions
 Build Order (Suggested)
 Hours 1-3: Expo app scaffold, local storage profile, panic button UI with haptics
 Hours 4-6: RealtimeKit integration - get video streaming working from phone
-Hours 7-9: Next.js dashboard - display incoming alerts, video feed, map
+Hours 7-9: Next.js dashboard - wire shared incidents state (Zustand), display incoming alerts
 Hours 10-12: Groq integration - transcription + AI triage
 Hours 13-16: Polish UI, command prompt, multi-alert handling
 Hours 17-20: Ghost mode (calculator disguise), testing full demo flow
@@ -124,7 +126,7 @@ Hours 21-24: Final polish, practice demo with team, sleep buffer
 
 What NOT to Do
 Don't add features after midnight - polish only
-Don't spend more than 15 min on auth (local storage, no Clerk needed)
+Don't over-invest in auth polish during hack window (Clerk can stay minimal for demo)
 Don't build Twilio call integration - mention it, don't build it
 Don't over-explain in the pitch - let the demo speak
 Don't read slides - talk over them

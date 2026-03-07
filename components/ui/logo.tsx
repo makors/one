@@ -3,8 +3,8 @@
  * but the initial design was done by us.
  */
 export default function OneLogo({
-  color = "#0c0c0c",
-  size = 1,
+  color = "#ffffff",
+  size = 0.65,
 }: {
   color?: string;
   size?: number;
