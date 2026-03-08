@@ -38,7 +38,8 @@ export type Alert = {
   updatedAt?: string
   transcript: TranscriptLine[]
   questions: AlertQuestion[]
-  callersCount: number
+  lat: number
+  lng: number
 }
 
 type AlertsState = {
@@ -48,8 +49,9 @@ type AlertsState = {
     type: AlertType
     priority: AlertPriority
     location: string
+    lat: number
+    lng: number
     safeToSpeak: boolean
-    callersCount?: number
   }) => void
   advanceAlertStatus: (id: string) => void
 }
@@ -64,10 +66,11 @@ const mockAlerts: Alert[] = [
     type: "school-threat",
     priority: "critical",
     location: "Jefferson High School — 4200 Oak Ave, Gym Wing",
+    lat: 40.7589,
+    lng: -73.9851,
     safeToSpeak: false,
     status: "active",
     createdAt: t(3),
-    callersCount: 7,
     transcript: [
       { text: "[loud bang] oh my god oh my god", at: t(2, 55) },
       { text: "everyone get down get down", at: t(2, 48) },
@@ -89,10 +92,11 @@ const mockAlerts: Alert[] = [
     type: "domestic-violence",
     priority: "critical",
     location: "Pine Ridge Apartments — Unit 4B, 88 Birch St",
+    lat: 40.7505,
+    lng: -73.9934,
     safeToSpeak: false,
     status: "active",
     createdAt: t(7),
-    callersCount: 1,
     transcript: [
       { text: "[muffled sounds, running water]", at: t(6, 50) },
       { text: "[whispering] he doesn't know i have it", at: t(6, 20) },
@@ -111,10 +115,11 @@ const mockAlerts: Alert[] = [
     type: "medical",
     priority: "high",
     location: "Sunrise Senior Living — Room 112, 300 Elm Blvd",
+    lat: 40.7282,
+    lng: -73.7949,
     safeToSpeak: true,
     status: "stabilizing",
     createdAt: t(14),
-    callersCount: 1,
     transcript: [
       { text: "he just collapsed i don't know what happened", at: t(13, 45) },
       { text: "harold? harold can you hear me?", at: t(13, 20) },
@@ -134,10 +139,11 @@ const mockAlerts: Alert[] = [
     type: "home-invasion",
     priority: "high",
     location: "1847 Maple Dr",
+    lat: 40.6892,
+    lng: -73.9442,
     safeToSpeak: false,
     status: "active",
     createdAt: t(21),
-    callersCount: 2,
     transcript: [
       { text: "[glass breaking]", at: t(20, 50) },
       { text: "[whispering] there's someone downstairs", at: t(20, 30) },
@@ -157,10 +163,11 @@ const mockAlerts: Alert[] = [
     type: "medical",
     priority: "medium",
     location: "St. Mary's Hospital — Emergency Dept, 500 Central Ave",
+    lat: 40.7484,
+    lng: -73.9870,
     safeToSpeak: true,
     status: "resolved",
     createdAt: t(38),
-    callersCount: 3,
     transcript: [
       { text: "he grabbed my arm and threw me against the wall", at: t(37, 30) },
       { text: "security is here they have him", at: t(36, 0) },
@@ -187,7 +194,6 @@ export const useAlertsStore = create<AlertsState>()((set) => ({
           createdAt: new Date().toISOString(),
           transcript: [],
           questions: [],
-          callersCount: 1,
         },
         ...state.alerts,
       ],
