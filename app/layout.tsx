@@ -4,6 +4,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
 import { Metadata } from "next";
+import { DevErrorSuppressor } from "@/components/dev-error-suppressor";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'})
 
@@ -29,6 +30,7 @@ export default function RootLayout({
       className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
     >
       <body>
+        <DevErrorSuppressor />
         <ClerkProvider>
           <ThemeProvider>{children}</ThemeProvider>
         </ClerkProvider>

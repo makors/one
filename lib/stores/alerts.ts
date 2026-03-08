@@ -4,16 +4,13 @@
  */
 
 import { create } from "zustand"
+import type { LocationObjectCoords } from "@/lib/location"
 
-export type AlertType =
-  | "school-threat"
-  | "domestic-violence"
-  | "medical"
-  | "home-invasion"
 export type AlertPriority = "critical" | "high" | "medium"
-export type AlertStatus = "active" | "stabilizing" | "resolved"
+export type AlertStatus = "active" | "resolved"
 
 export type TranscriptLine = {
+  id?: string
   text: string
   at: string
 }
@@ -26,157 +23,45 @@ export type AlertQuestion = {
   answer?: "yes" | "no"
 }
 
+export type MedicalInfo = {
+  age?: number
+  conditions?: string
+}
+
 export type Alert = {
   id: string
-  summary: string
-  type: AlertType
+  meetingId?: string
+  title: string
+  subtitle: string
+  streamTitle: string
+  streamSummary: string
   priority: AlertPriority
-  location: string
-  safeToSpeak: boolean
+  location: LocationObjectCoords | null
   status: AlertStatus
   createdAt: string
   updatedAt?: string
   transcript: TranscriptLine[]
   questions: AlertQuestion[]
   callersCount: number
+  medicalInfo?: MedicalInfo
 }
 
 type AlertsState = {
   alerts: Alert[]
   addAlert: (newAlert: {
-    summary: string
-    type: AlertType
+    title: string
+    subtitle: string
+    streamTitle: string
+    streamSummary: string
     priority: AlertPriority
-    location: string
-    safeToSpeak: boolean
+    location: LocationObjectCoords | null
     callersCount?: number
   }) => void
   advanceAlertStatus: (id: string) => void
 }
 
-const t = (minsAgo: number, secsAgo = 0) =>
-  new Date(Date.now() - 1000 * (minsAgo * 60 + secsAgo)).toISOString()
-
-const mockAlerts: Alert[] = [
-  {
-    id: "mock-1",
-    summary: "Gunshots reported near gymnasium, students sheltering in classrooms",
-    type: "school-threat",
-    priority: "critical",
-    location: "Jefferson High School — 4200 Oak Ave, Gym Wing",
-    safeToSpeak: false,
-    status: "active",
-    createdAt: t(3),
-    callersCount: 7,
-    transcript: [
-      { text: "[loud bang] oh my god oh my god", at: t(2, 55) },
-      { text: "everyone get down get down", at: t(2, 48) },
-      { text: "[screaming in distance]", at: t(2, 30) },
-      { text: "we're in room 214 the door is locked", at: t(2, 10) },
-      { text: "i can hear him in the hallway", at: t(1, 45) },
-      { text: "[footsteps, door handle rattling]", at: t(1, 20) },
-      { text: "please hurry please hurry", at: t(0, 50) },
-    ],
-    questions: [
-      { id: "q1-1", text: "Are you physically safe right now?", sentAt: t(2, 40), answeredAt: t(2, 38), answer: "yes" },
-      { id: "q1-2", text: "How many people are with you?", sentAt: t(2, 20), answeredAt: t(2, 15), answer: "yes" },
-      { id: "q1-3", text: "Is the threat still in the building?", sentAt: t(1, 0) },
-    ],
-  },
-  {
-    id: "mock-2",
-    summary: "Victim hiding in bathroom, partner unaware of phone",
-    type: "domestic-violence",
-    priority: "critical",
-    location: "Pine Ridge Apartments — Unit 4B, 88 Birch St",
-    safeToSpeak: false,
-    status: "active",
-    createdAt: t(7),
-    callersCount: 1,
-    transcript: [
-      { text: "[muffled sounds, running water]", at: t(6, 50) },
-      { text: "[whispering] he doesn't know i have it", at: t(6, 20) },
-      { text: "[banging on door] open this door right now", at: t(5, 40) },
-      { text: "[crying, barely audible]", at: t(5, 10) },
-      { text: "[door handle rattling aggressively]", at: t(4, 30) },
-    ],
-    questions: [
-      { id: "q2-1", text: "Are you able to lock the bathroom door?", sentAt: t(6, 30), answeredAt: t(6, 25), answer: "yes" },
-      { id: "q2-2", text: "Is the person armed?", sentAt: t(5, 50) },
-    ],
-  },
-  {
-    id: "mock-3",
-    summary: "Elderly male unresponsive, neighbor triggered alert",
-    type: "medical",
-    priority: "high",
-    location: "Sunrise Senior Living — Room 112, 300 Elm Blvd",
-    safeToSpeak: true,
-    status: "stabilizing",
-    createdAt: t(14),
-    callersCount: 1,
-    transcript: [
-      { text: "he just collapsed i don't know what happened", at: t(13, 45) },
-      { text: "harold? harold can you hear me?", at: t(13, 20) },
-      { text: "he's breathing, i can see his chest moving", at: t(12, 50) },
-      { text: "i already called the front desk", at: t(12, 10) },
-      { text: "okay they said someone is coming up now", at: t(11, 0) },
-    ],
-    questions: [
-      { id: "q3-1", text: "Is the person breathing?", sentAt: t(13, 40), answeredAt: t(13, 35), answer: "yes" },
-      { id: "q3-2", text: "Do you know CPR?", sentAt: t(13, 10), answeredAt: t(13, 5), answer: "no" },
-      { id: "q3-3", text: "Has help arrived on scene?", sentAt: t(10, 0), answeredAt: t(9, 55), answer: "yes" },
-    ],
-  },
-  {
-    id: "mock-4",
-    summary: "Intruder in home, family locked in upstairs bedroom",
-    type: "home-invasion",
-    priority: "high",
-    location: "1847 Maple Dr",
-    safeToSpeak: false,
-    status: "active",
-    createdAt: t(21),
-    callersCount: 2,
-    transcript: [
-      { text: "[glass breaking]", at: t(20, 50) },
-      { text: "[whispering] there's someone downstairs", at: t(20, 30) },
-      { text: "[children crying softly]", at: t(19, 45) },
-      { text: "[footsteps on stairs]", at: t(18, 20) },
-      { text: "[furniture moving]", at: t(16, 0) },
-    ],
-    questions: [
-      { id: "q4-1", text: "Is your bedroom door locked?", sentAt: t(20, 20), answeredAt: t(20, 15), answer: "yes" },
-      { id: "q4-2", text: "Are there children with you?", sentAt: t(19, 50), answeredAt: t(19, 45), answer: "yes" },
-      { id: "q4-3", text: "Can you see or hear the intruder now?", sentAt: t(15, 0) },
-    ],
-  },
-  {
-    id: "mock-5",
-    summary: "Nurse assaulted in ER hallway, situation contained",
-    type: "medical",
-    priority: "medium",
-    location: "St. Mary's Hospital — Emergency Dept, 500 Central Ave",
-    safeToSpeak: true,
-    status: "resolved",
-    createdAt: t(38),
-    callersCount: 3,
-    transcript: [
-      { text: "he grabbed my arm and threw me against the wall", at: t(37, 30) },
-      { text: "security is here they have him", at: t(36, 0) },
-      { text: "i'm okay, my wrist hurts but i'm okay", at: t(35, 20) },
-      { text: "patient has been sedated and restrained", at: t(33, 0) },
-    ],
-    questions: [
-      { id: "q5-1", text: "Are you injured?", sentAt: t(37, 20), answeredAt: t(37, 15), answer: "yes" },
-      { id: "q5-2", text: "Is the patient still a threat?", sentAt: t(36, 10), answeredAt: t(35, 50), answer: "no" },
-      { id: "q5-3", text: "Do you need medical attention?", sentAt: t(35, 0), answeredAt: t(34, 50), answer: "yes" },
-    ],
-  },
-]
-
 export const useAlertsStore = create<AlertsState>()((set) => ({
-  alerts: mockAlerts,
+  alerts: [],
   addAlert: (newAlert) =>
     set((state) => ({
       alerts: [
@@ -201,10 +86,8 @@ export const useAlertsStore = create<AlertsState>()((set) => ({
               updatedAt: new Date().toISOString(),
               status:
                 alert.status === "active"
-                  ? "stabilizing"
-                  : alert.status === "stabilizing"
-                    ? "resolved"
-                    : "active",
+                  ? "resolved"
+                  : "active",
             }
           : alert
       ),
@@ -212,7 +95,6 @@ export const useAlertsStore = create<AlertsState>()((set) => ({
 }))
 
 // Backward-compatible aliases while the codebase transitions from "incidents" to "alerts".
-export type IncidentType = AlertType
 export type IncidentPriority = AlertPriority
 export type IncidentStatus = AlertStatus
 export type Incident = Alert
