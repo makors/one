@@ -2,6 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Leaflet CSS - must be imported here for Next.js */
+@import "leaflet/dist/leaflet.css";
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -125,4 +128,72 @@
   html {
     @apply font-sans;
     }
+}
+
+/* ============================================
+   LEAFLET MAP FIXES
+   ============================================ */
+
+/* Root map container - must have explicit size */
+.leaflet-container {
+  height: 100% !important;
+  width: 100% !important;
+  background: #e5e5e5;
+  font-family: inherit;
+}
+
+/* Fix map not rendering tiles properly */
+.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container,
+.leaflet-pane > svg,
+.leaflet-pane > canvas,
+.leaflet-zoom-box,
+.leaflet-image-layer,
+.leaflet-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* Fix z-index stacking for overlays */
+.leaflet-control {
+  z-index: 800;
+}
+
+.leaflet-pane {
+  z-index: 400;
+}
+
+/* Custom overlay z-index (above map, below modals) */
+.z-\[1000\] {
+  z-index: 1000 !important;
+}
+
+/* Dark mode map adjustments */
+.dark .leaflet-container {
+  filter: brightness(0.85) contrast(1.1);
+}
+
+/* Fix popup styling in dark mode */
+.dark .leaflet-popup-content-wrapper {
+  background: #1a1a1a;
+  color: #fff;
+  border-radius: 0.5rem;
+}
+
+.dark .leaflet-popup-tip {
+  background: #1a1a1a;
+}
+
+/* Fix marker icon sizing */
+.leaflet-marker-icon {
+  display: block !important;
+}
+
+/* Remove focus outline on map */
+.leaflet-container:focus {
+  outline: none;
 }
