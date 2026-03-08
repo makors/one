@@ -55,7 +55,7 @@ export default function AlertCard({ alert }: { alert: Alert }) {
                 {alert.callersCount}
               </span>
           </div>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground/50 tabular-nums">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground/50 tabular-nums" suppressHydrationWarning>
             <Clock className="size-3" />
             {timeAgo(alert.createdAt)}
           </div>
