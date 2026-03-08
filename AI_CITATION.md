@@ -1,0 +1,3 @@
+# AI Citation
+
+We relied on agentic coding tools for three primary purposes: learning of the subject (for those new to web/mobile development), debugging, and "boilerplate" code (e.g., mobile UI, specific functionality). Overall, we used 3 coding tools--Kimi Code, Claude Code, and GitHub Copilot, which allowed us to accelerate our development towards our product. AI served as a mentor and an "assistant," not as a replacement for our learning throughout the process--which was especially useful for team members learning web development from scratch.
